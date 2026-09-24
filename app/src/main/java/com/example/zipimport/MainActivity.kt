@@ -1,6 +1,7 @@
 package com.example.zipimport
 
 import android.app.Activity
+import android.os.Environment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -25,7 +26,7 @@ class MainActivity : Activity() {
         layout.addView(btn)
         layout.addView(status)
         setContentView(layout)
-
+if (!Environment.isExternalStorageManager()) startActivity(Intent(android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
         btn.setOnClickListener {
             val i = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -44,7 +45,7 @@ class MainActivity : Activity() {
     }
 
     private fun unzip(uri: Uri) {
-        val outDir = getExternalFilesDir(null)!!
+        val outDir = File(Environment.getExternalStorageDirectory(), "Download/Generals").also { it.mkdirs() }
         var count = 0
         try {
             ZipInputStream(contentResolver.openInputStream(uri)).use { zip ->
